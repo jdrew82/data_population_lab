@@ -3,6 +3,7 @@
 import csv
 
 from nautobot.dcim.models import Location, LocationType
+from nautobot.extras.models import Status
 from nautobot.apps.jobs import FileVar, Job
 
 US_STATE_ABBR_MAP = {
