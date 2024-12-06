@@ -3,8 +3,7 @@
 import csv
 
 from nautobot.dcim.models import Location
-from nautobot.extras.models import Job
-from nautobot.apps.jobs import FileVar
+from nautobot.apps.jobs import FileVar, Job
 
 US_STATE_ABBR_MAP = {
     'AL': 'Alabama',
