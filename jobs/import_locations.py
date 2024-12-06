@@ -108,4 +108,4 @@ class ImportLocationsCSV(Job):
 
                 state_loc, _ = Location.objects.get_or_create(name=state, location_type=state_loctype, defaults={"status": active_status})
                 city_loc, _ = Location.objects.get_or_create(name=city, location_type=city_loctype, parent=state_loc, defaults={"status": active_status})
-                Location.objects.get_or_create(name=location_name, location_type=location_type, parent=city_loc, defaults={"status": active_status})
+                Location.objects.get_or_create(name=location_name, parent=city_loc, defaults={"location_type": location_type, "status": active_status})
