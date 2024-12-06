@@ -2,7 +2,7 @@
 
 import csv
 
-from nautobot.dcim.models import Location
+from nautobot.dcim.models import Location, LocationType
 from nautobot.apps.jobs import FileVar, Job
 
 US_STATE_ABBR_MAP = {
@@ -91,16 +91,20 @@ class ImportLocationsCSV(Job):
                 self.logger.debug(f"Writing: {line}")
                 file.write(line.decode("utf-8"))
 
+        state_loctype = LocationType.objects.get(name="State")
+        city_loctype = LocationType.objects.get(name="City")
+
         with open("/tmp/locations.csv", mode="r") as file:
             csv_file = csv.DictReader(file)
             for line in csv_file:
                 location_name = line["name"].replace("-BR", "").replace("-DC", "")
-                location_type = "Branch" if line["name"].endswith("BR") else "Data Center"
+                location_type_name = "Branch" if line["name"].endswith("BR") else "Data Center"
+                location_type = LocationType.objects.get(name=location_type_name)
                 city = line["city"]
                 state = line["state"]
                 if state in US_STATE_ABBR_MAP:
                     state = US_STATE_ABBR_MAP[state]
 
-                state_loc, _ = Location.objects.get_or_create(name=state, location_type__name="State", status__name="Active")
-                city_loc, _ = Location.objects.get_or_create(name=city, location_type__name="City", parent=state_loc, status__name="Active")
+                state_loc, _ = Location.objects.get_or_create(name=state, location_type=state_loctype, status__name="Active")
+                city_loc, _ = Location.objects.get_or_create(name=city, location_type=city_loctype, parent=state_loc, status__name="Active")
                 Location.objects.get_or_create(name=location_name, location_type__name=location_type, parent=city_loc, status__name="Active")
