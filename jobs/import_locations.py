@@ -1,0 +1,100 @@
+"""Custom Job for Data Population Lab to import Locations into Nautobot."""
+
+import csv
+
+from nautobot.dcim.
+from nautobot.extras.models import Job
+from nautobot.apps.jobs import FileVar
+
+US_STATE_ABBR_MAP = {
+    'AL': 'Alabama',
+    'AK': 'Alaska',
+    'AZ': 'Arizona',
+    'AR': 'Arkansas',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DE': 'Delaware',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'HI': 'Hawaii',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'IA': 'Iowa',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'ME': 'Maine',
+    'MD': 'Maryland',
+    'MA': 'Massachusetts',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MS': 'Mississippi',
+    'MO': 'Missouri',
+    'MT': 'Montana',
+    'NE': 'Nebraska',
+    'NV': 'Nevada',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NY': 'New York',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PA': 'Pennsylvania',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VT': 'Vermont',
+    'VA': 'Virginia',
+    'WA': 'Washington',
+    'WV': 'West Virginia',
+    'WI': 'Wisconsin',
+    'WY': 'Wyoming',
+    'DC': 'District of Columbia',
+}
+
+
+class ImportLocationsCSV(Job):
+    """Import Locations from CSV file.
+
+    Args:
+        Job (Job): Nautobot Job.
+    """
+
+    csv_file = FileVar(
+        lael="Locations CSV File",
+        required=True
+    )
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Meta object boilerplate for onboarding."""
+
+        name = "Import Locations from CSV"
+        description = "Create Locations from CSV file."
+        has_sensitive_variables = False
+
+    def run(self, *args, **kwargs):
+        """Process Locations CSV."""
+
+        self.csv_file = kwargs["csv_file"]
+
+        with open(self.csv_file, mode="r") as file:
+            csv_file = csv.DictReader(file)
+            for line in csv_file:
+                location_name = line["name"].replace("-BR", "").replace("-DC", "")
+                location_type = "Branch" if line["name"].endswith("BR") else "Data Center"
+                city = line["city"]
+                state = line["state"]
+                if state in US_STATE_ABBR_MAP:
+                    state = US_STATE_ABBR_MAP[state]
+
+                Location.objects.get_or_create(name=state, location_type__name="State")
+                Location.objects.get_or_create(name=city, location_type__name="City")
+                Location.objects.get_or_create(name=location_name, location_type__name=location_type)
