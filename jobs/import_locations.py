@@ -84,8 +84,12 @@ class ImportLocationsCSV(Job):
 
         self.csv_file = kwargs["csv_file"]
 
+        self.logger.debug(f"CSV: {self.csv_file}")
+
         csv_file = csv.DictReader(self.csv_file)
-        for line in csv_file:
+
+        self.logger.debug(f"DictReader: {csv_file}")
+        for line in csv_file.readlines():
             location_name = line["name"].replace("-BR", "").replace("-DC", "")
             location_type = "Branch" if line["name"].endswith("BR") else "Data Center"
             city = line["city"]
