@@ -84,17 +84,20 @@ class ImportLocationsCSV(Job):
 
         self.csv_file = kwargs["csv_file"]
 
-        with open(self.csv_file, mode="r") as file:
-            csv_file = csv.DictReader(file)
+        for line in self.csv_file:
+            self.logger.debug(line)
 
-            for line in csv_file:
-                location_name = line["name"].replace("-BR", "").replace("-DC", "")
-                location_type = "Branch" if line["name"].endswith("BR") else "Data Center"
-                city = line["city"]
-                state = line["state"]
-                if state in US_STATE_ABBR_MAP:
-                    state = US_STATE_ABBR_MAP[state]
+        # with open(self.csv_file, mode="r") as file:
+        #     csv_file = csv.DictReader(file)
 
-                Location.objects.get_or_create(name=state, location_type__name="State")
-                Location.objects.get_or_create(name=city, location_type__name="City")
-                Location.objects.get_or_create(name=location_name, location_type__name=location_type)
+        #     for line in csv_file:
+        #         location_name = line["name"].replace("-BR", "").replace("-DC", "")
+        #         location_type = "Branch" if line["name"].endswith("BR") else "Data Center"
+        #         city = line["city"]
+        #         state = line["state"]
+        #         if state in US_STATE_ABBR_MAP:
+        #             state = US_STATE_ABBR_MAP[state]
+
+        #         Location.objects.get_or_create(name=state, location_type__name="State")
+        #         Location.objects.get_or_create(name=city, location_type__name="City")
+        #         Location.objects.get_or_create(name=location_name, location_type__name=location_type)
