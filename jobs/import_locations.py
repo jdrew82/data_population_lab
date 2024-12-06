@@ -88,6 +88,7 @@ class ImportLocationsCSV(Job):
 
         with open("/tmp/locations.csv", mode="w", encoding="utf-8") as file:
             for line in self.csv_file.readlines():
+                self.logger.debug(f"Writing: {line}")
                 file.write(line)
 
         with open("/tmp/locations.csv", mode="r") as file:
