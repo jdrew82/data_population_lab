@@ -1,6 +1,7 @@
 """Custom Job for Data Population Lab to import Locations into Nautobot."""
 
 import csv
+from io import StringIO
 
 from nautobot.dcim.models import Location, LocationType
 from nautobot.extras.models import Status
@@ -89,29 +90,24 @@ class ImportLocationsCSV(Job):
 
         self.csv_file = kwargs["csv_file"]
 
-        self.logger.debug(self.csv_file)
-
-        with open("/tmp/locations.csv", mode="w", encoding="utf-8") as file:
-            for line in self.csv_file.readlines():
-                file.write(line.decode("utf-8"))
-
         active_status = Status.objects.get(name="Active")
         state_loctype = LocationType.objects.get(name="State")
         city_loctype = LocationType.objects.get(name="City")
 
-        with open("/tmp/locations.csv", mode="r") as file:
-            csv_file = csv.DictReader(file)
-            for line in csv_file:
-                location_name = line["name"].replace("-BR", "").replace("-DC", "")
-                if location_name in LOCATION_NAME_MAP:
-                    location_name = LOCATION_NAME_MAP[location_name]
-                location_type_name = "Branch" if line["name"].endswith("BR") else "Data Center"
-                location_type = LocationType.objects.get(name=location_type_name)
-                city = line["city"]
-                state = line["state"]
-                if state in US_STATE_ABBR_MAP:
-                    state = US_STATE_ABBR_MAP[state]
+        decoded_csv = self.csv_file.read().decode("utf-8")
 
-                state_loc, _ = Location.objects.get_or_create(name=state, location_type=state_loctype, defaults={"status": active_status})
-                city_loc, _ = Location.objects.get_or_create(name=city, location_type=city_loctype, parent=state_loc, defaults={"status": active_status})
-                Location.objects.get_or_create(name=location_name, parent=city_loc, defaults={"location_type": location_type, "status": active_status})
+        csv_file = csv.DictReader(StringIO(decoded_csv))
+        for line in csv_file:
+            location_name = line["name"].replace("-BR", "").replace("-DC", "")
+            if location_name in LOCATION_NAME_MAP:
+                location_name = LOCATION_NAME_MAP[location_name]
+            location_type_name = "Branch" if line["name"].endswith("BR") else "Data Center"
+            location_type = LocationType.objects.get(name=location_type_name)
+            city = line["city"]
+            state = line["state"]
+            if state in US_STATE_ABBR_MAP:
+                state = US_STATE_ABBR_MAP[state]
+
+            state_loc, _ = Location.objects.get_or_create(name=state, location_type=state_loctype, defaults={"status": active_status})
+            city_loc, _ = Location.objects.get_or_create(name=city, location_type=city_loctype, parent=state_loc, defaults={"status": active_status})
+            Location.objects.get_or_create(name=location_name, parent=city_loc, defaults={"location_type": location_type, "status": active_status})
