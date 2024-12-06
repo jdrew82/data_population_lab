@@ -89,7 +89,7 @@ class ImportLocationsCSV(Job):
         with open("/tmp/locations.csv", mode="w", encoding="utf-8") as file:
             for line in self.csv_file.readlines():
                 self.logger.debug(f"Writing: {line}")
-                file.write(line)
+                file.write(line.decode("utf-8"))
 
         with open("/tmp/locations.csv", mode="r") as file:
             csv_file = csv.DictReader(file)
