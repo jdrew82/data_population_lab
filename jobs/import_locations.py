@@ -60,6 +60,10 @@ US_STATE_ABBR_MAP = {
     'DC': 'District of Columbia',
 }
 
+LOCATION_NAME_MAP = {
+    "Den": "Denver",
+    "SanDiego": "San Diego",
+}
 
 class ImportLocationsCSV(Job):
     """Import Locations from CSV file.
@@ -99,6 +103,8 @@ class ImportLocationsCSV(Job):
             csv_file = csv.DictReader(file)
             for line in csv_file:
                 location_name = line["name"].replace("-BR", "").replace("-DC", "")
+                if location_name in LOCATION_NAME_MAP:
+                    location_name = LOCATION_NAME_MAP[location_name]
                 location_type_name = "Branch" if line["name"].endswith("BR") else "Data Center"
                 location_type = LocationType.objects.get(name=location_type_name)
                 city = line["city"]
