@@ -88,9 +88,9 @@ class ImportLocationsCSV(Job):
 
         with open("/tmp/locations.csv", mode="w", encoding="utf-8") as file:
             for line in self.csv_file.readlines():
-                self.logger.debug(f"Writing: {line}")
                 file.write(line.decode("utf-8"))
 
+        active_status = Status.objects.get(name="Active")
         state_loctype = LocationType.objects.get(name="State")
         city_loctype = LocationType.objects.get(name="City")
 
@@ -105,6 +105,6 @@ class ImportLocationsCSV(Job):
                 if state in US_STATE_ABBR_MAP:
                     state = US_STATE_ABBR_MAP[state]
 
-                state_loc, _ = Location.objects.get_or_create(name=state, location_type=state_loctype, status__name="Active")
-                city_loc, _ = Location.objects.get_or_create(name=city, location_type=city_loctype, parent=state_loc, status__name="Active")
-                Location.objects.get_or_create(name=location_name, location_type__name=location_type, parent=city_loc, status__name="Active")
+                state_loc, _ = Location.objects.get_or_create(name=state, location_type=state_loctype, status=active_status)
+                city_loc, _ = Location.objects.get_or_create(name=city, location_type=city_loctype, parent=state_loc, status=active_status)
+                Location.objects.get_or_create(name=location_name, location_type__name=location_type, parent=city_loc, status=active_status)
