@@ -2,7 +2,7 @@
 
 import csv
 
-from nautobot.dcim.
+from nautobot.dcim.models import Location
 from nautobot.extras.models import Job
 from nautobot.apps.jobs import FileVar
 
