@@ -101,6 +101,6 @@ class ImportLocationsCSV(Job):
                 if state in US_STATE_ABBR_MAP:
                     state = US_STATE_ABBR_MAP[state]
 
-                Location.objects.get_or_create(name=state, location_type__name="State")
-                Location.objects.get_or_create(name=city, location_type__name="City")
-                Location.objects.get_or_create(name=location_name, location_type__name=location_type)
+                Location.objects.get_or_create(name=state, location_type__name="State", status__name="Active")
+                Location.objects.get_or_create(name=city, location_type__name="City", status__name="Active")
+                Location.objects.get_or_create(name=location_name, location_type__name=location_type, status__name="Active")
