@@ -69,7 +69,7 @@ class ImportLocationsCSV(Job):
     """
 
     csv_file = FileVar(
-        lael="Locations CSV File",
+        label="Locations CSV File",
         required=True
     )
 
