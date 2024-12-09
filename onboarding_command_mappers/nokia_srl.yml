@@ -4,20 +4,20 @@ sync_devices:
     commands:
       command: "show version | as json"
       parser: "none"
-      jpath: "basic system info.Hostname"
-      post_processor: ""
+      jpath: "basic system info"
+      post_processor: "{{ obj['Hostname'] }}"
   serial:
     commands:
       command: "show version | as json"
       parser: "none"
-      jpath: "basic system info.Serial Number"
-      post_processor: ""
+      jpath: "basic system info"
+      post_processor: "{{ obj['Serial Number']}}"
   device_type:
     commands:
       command: "show version | as json"
       parser: "none"
-      jpath: "basic system info.Chassis Type"
-      post_processor: ""
+      jpath: "basic system info"
+      post_processor: "{{ obj['Chassis Type']}}"
   mgmt_interface:
     commands:
       command: "show interface all | as json"
