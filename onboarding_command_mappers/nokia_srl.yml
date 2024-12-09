@@ -3,30 +3,30 @@ sync_devices:
   hostname:
     commands:
       command: "show version | as json"
-      parser: "textfsm"
+      parser: "raw"
       jpath: "basic system info.Hostname"
       post_processor: ""
-  serial:
-    commands:
-      command: "show version | as json"
-      parser: "textfsm"
-      jpath: "basic system info.Serial Number"
-      post_processor: ""
-  device_type:
-    commands:
-      command: "show version | as json"
-      parser: "textfsm"
-      jpath: "basic system info.Chassis Type"
-      post_processor: ""
-  mgmt_interface:
-    commands:
-      command: "show interface all | as json"
-      parser: "textfsm"
-      jpath: "interfaces[-1].name"
-      post_processor: ""
-  mask_length:
-    commands:
-      command: "show interface all | as json"
-      parser: "textfsm"
-      jpath: "interfaces[-1].subinterfaces[0].address[0].prefix"
-      post_processor: "{{ obj | ipaddress_interface | network | ipaddress_network | prefixlen }}"
+  # serial:
+  #   commands:
+  #     command: "show version | as json"
+  #     parser: "raw"
+  #     jpath: "basic system info.Serial Number"
+  #     post_processor: ""
+  # device_type:
+  #   commands:
+  #     command: "show version | as json"
+  #     parser: "raw"
+  #     jpath: "basic system info.Chassis Type"
+  #     post_processor: ""
+  # mgmt_interface:
+  #   commands:
+  #     command: "show interface all | as json"
+  #     parser: "raw"
+  #     jpath: "interfaces[-1].name"
+  #     post_processor: ""
+  # mask_length:
+  #   commands:
+  #     command: "show interface all | as json"
+  #     parser: "raw"
+  #     jpath: "interfaces[-1].subinterfaces[0].address[0].prefix"
+  #     post_processor: "{{ obj | ipaddress_interface | network | ipaddress_network | prefixlen }}"
