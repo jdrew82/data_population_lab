@@ -22,8 +22,8 @@ sync_devices:
     commands:
       command: "show interface all | as json"
       parser: "none"
-      jpath: "interfaces[-1].name"
-      post_processor: ""
+      jpath: "interfaces[-1]"
+      post_processor: "{{ obj.name }}"
   mask_length:
     commands:
       command: "show interface all | as json"
