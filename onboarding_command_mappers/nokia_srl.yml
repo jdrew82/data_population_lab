@@ -10,13 +10,13 @@ sync_devices:
     commands:
       command: "show version | as json"
       parser: "none"
-      jpath: "* | [0] | 'Serial Number'"
+      jpath: "*.'Serial Number' | [0]"
       post_processor: ""
   device_type:
     commands:
       command: "show version | as json"
       parser: "none"
-      jpath: "* | [0] | 'Chassis Type'"
+      jpath: "*.'Chassis Type' | [0]"
       post_processor: ""
   mgmt_interface:
     commands:
